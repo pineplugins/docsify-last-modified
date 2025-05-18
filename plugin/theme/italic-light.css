@@ -1,0 +1,36 @@
+.last-modified-footer {
+  font-family: Georgia, serif;
+  font-size: 12px;
+  color: #666;
+  background: #fefefe;
+  font-style: italic;
+  border-top: 1px solid #ccc;
+  padding: 0.5em 1em;
+  margin-top: 2em;
+  max-width: 400px;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.last-modified-footer strong {
+    font-weight: bold;
+    color: #111;
+}
+
+.last-modified-footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.last-modified-footer a:hover {
+    text-decoration: underline;
+}
+
+.last-modified-footer code {
+    font-family: monospace;
+    font-size: 11px;
+    background: none;
+    padding: 0;
+    border: none;
+}
+

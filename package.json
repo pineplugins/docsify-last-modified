@@ -1,0 +1,38 @@
+{
+  "name": "docsify-last-modified",
+  "version": "1.0.0",
+  "description": "A Docsify plugin to display last updated date and page metadata like author, version, tags, and more.",
+  "main": "",
+  "scripts": {
+    "run-script": "node scripts/generate-last-modified.js",
+    "docssrv": "docsify serve",
+    "test": "npm run run-script && npm run docssrv"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pineplugins/docsify-last-modified.git"
+  },
+  "keywords": [
+    "docsify",
+    "plugin",
+    "metadata",
+    "last-update",
+    "documentation",
+    "static-site",
+    "markdown",
+    "frontmatter",
+    "seo",
+    "versioning",
+    "author",
+    "update",
+    "site-info"
+  ],
+  "author": "openpineaplehub",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/pineplugins/docsify-last-modified/issues"
+  },
+  "homepage": "https://github.com/pineplugins/docsify-last-modified#readme",
+  "dependencies": {}
+}
