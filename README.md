@@ -8,4 +8,4 @@
 ![CDN Ready](https://img.shields.io/badge/CDN-jsDelivr-red?style=for-the-badge&logo=jsDelivr)
 ![Docs](https://img.shields.io/badge/docs-online-blue?style=for-the-badge&logo=readthedocs)
 
-This is a test
+This is a test test
