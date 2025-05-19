@@ -86,5 +86,12 @@ function main() {
     }
     console.log(' Metadata generation complete.');
 }
+if (fs.existsSync(jsonPath)) {
+    console.log(` Updating metadata: ${jsonPath}`);
+} else {
+    console.log(` Creating new metadata: ${jsonPath}`);
+}
+fs.writeFileSync(jsonPath, JSON.stringify(meta, null, 2));
+
 
 main();
