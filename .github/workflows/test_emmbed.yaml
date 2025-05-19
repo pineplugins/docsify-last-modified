@@ -1,0 +1,60 @@
+name: Update Metadata & Embed
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-meta:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Metadata JSON
+        run: node scripts/gen-meta.js
+
+      - name: Generate embedded metadata JS
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = './plugin/meta';
+          let metaData = {};
+          fs.readdirSync(path).forEach(file => {
+            if (file.endsWith('.json')) {
+              const slug = file.replace('.json', '').toUpperCase();
+              metaData[slug] = JSON.parse(fs.readFileSync(path + '/' + file));
+            }
+          });
+          const jsContent = 'window.pageMeta = ' + JSON.stringify(metaData, null, 2) + ';';
+          fs.writeFileSync('plugin/meta/embedded-meta.js', jsContent);
+          "
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add plugin/meta/*.json plugin/meta/embedded-meta.js
+          git diff --cached --quiet || git commit -m "🔄 Update and embed metadata"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push origin HEAD
