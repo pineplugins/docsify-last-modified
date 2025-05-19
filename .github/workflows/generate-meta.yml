@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Generate Metadata JSON
-        run: node scripts/generate-meta.js
+        run: node scripts/gen-meta.js
 
       - name: Commit changes
         run: |
