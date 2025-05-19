@@ -3,7 +3,7 @@ name: Update Metadata & Embed
 on:
   push:
     branches:
-      - main
+      - inject/systemoremmed
   workflow_dispatch:
 
 permissions:
