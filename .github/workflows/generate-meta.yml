@@ -21,25 +21,57 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
 
       - name: Install dependencies (if needed)
         run: |
           if [ -f package.json ]; then
+            echo " package.json found, installing..."
             npm install
+          else
+            echo " No package.json found. Skipping npm install."
           fi
 
       - name: Run metadata generation script
-        run: node .github/scripts/gen-meta.js
+        run: |
+          echo " Current Directory:"
+          pwd
+          echo " Listing .github/scripts directory:"
+          ls -la .github/scripts
+          echo " Running script..."
+          node .github/scripts/gen-meta.js || { echo " Script failed!"; exit 1; }
 
-      - name: Commit and push metadata
+      - name: Show generated JSON
+        run: |
+          echo " Checking plugin/meta folder..."
+          ls -la plugin/meta || echo " plugin/meta not found"
+          echo " Showing contents of generated files:"
+          for file in plugin/meta/*.json; do
+            echo "---- $file ----"
+            cat "$file"
+            echo ""
+          done
+
+      - name: Git status before commit
+        run: |
+          echo " Git status:"
+          git status
+          echo " Git diff:"
+          git diff
+          echo " Git diff cached:"
+          git diff --cached || true
+
+      - name: Commit and push metadata (if any changes)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add plugin/meta/*.json
+
+          git add plugin/meta/*.json || echo " No files to add"
           if git diff --cached --quiet; then
-            echo "✅ No changes to commit."
+            echo " No changes to commit."
           else
-            git commit -m "🔄 Auto-update metadata from markdown files"
+            echo " Committing changes..."
+            git commit -m " Auto-update metadata from markdown files"
+            echo " Pushing to main..."
             git push
           fi
