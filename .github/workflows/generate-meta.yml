@@ -1,77 +1,37 @@
-name: Generate Metadata JSON
+name: Update Metadata
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "**.md"
   workflow_dispatch:
 
 jobs:
-  generate-meta:
+  update-meta:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # penting supaya git log lengkap
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: "22"
+          node-version: '20'
 
-      - name: Install dependencies (if needed)
-        run: |
-          if [ -f package.json ]; then
-            echo " package.json found, installing..."
-            npm install
-          else
-            echo " No package.json found. Skipping npm install."
-          fi
+      - name: Install dependencies
+        run: npm install
 
-      - name: Run metadata generation script
-        run: |
-          echo " Current Directory:"
-          pwd
-          echo " Listing .github/scripts directory:"
-          ls -la .github/scripts
-          echo " Running script..."
-          node .github/scripts/gen-meta.js || { echo " Script failed!"; exit 1; }
+      - name: Generate Metadata JSON
+        run: node scripts/generate-meta.js
 
-      - name: Show generated JSON
-        run: |
-          echo " Checking plugin/meta folder..."
-          ls -la plugin/meta || echo " plugin/meta not found"
-          echo " Showing contents of generated files:"
-          for file in plugin/meta/*.json; do
-            echo "---- $file ----"
-            cat "$file"
-            echo ""
-          done
-
-      - name: Git status before commit
-        run: |
-          echo " Git status:"
-          git status
-          echo " Git diff:"
-          git diff
-          echo " Git diff cached:"
-          git diff --cached || true
-
-      - name: Commit and push metadata (if any changes)
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add plugin/meta/*.json || echo " No files to add"
-          if git diff --cached --quiet; then
-            echo " No changes to commit."
-          else
-            echo " Committing changes..."
-            git commit -m " Auto-update metadata from markdown files"
-            echo " Pushing to main..."
-            git push
-          fi
+          git add plugin/meta/*.json
+          git diff --cached --quiet || git commit -m "🔄 Update metadata JSON files"
+          
+      - name: Push changes
+        run: git push origin HEAD
